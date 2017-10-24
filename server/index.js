@@ -10,7 +10,8 @@ io.on('connection', (socket) => {
 
   socket.on('tick', (from, msg) => {
     console.log('MSG from', from, ' saying ', msg);
-    socket.emit('tick', { msg: msg });
+    // socket.emit('tick', { msg: msg });
+    io.sockets.emit('tick', { msg: msg });
   });
 
 });
