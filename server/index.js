@@ -1,9 +1,11 @@
-
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 const PORT = process.env.NODE_ENV === 'production' ? 80 : 3000;
 
+app.get('/', (req, res) => {
+  res.send('yo');
+})
 
 io.on('connection', (socket) => {
    console.log('connected to server');
