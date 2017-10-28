@@ -12,23 +12,21 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-   console.log('connected to server');
-  // for audio
+   console.log('A client has connected to the server!');
+
   ss(socket).on('audio', function(audioStream, data) {
+    console.log('got audio audioStream');
     const relayedAudioStream = ss.createStream();
-    console.log('got audio audioStream, piping stream to clients');
     ss(io.sockets).emit('audio', relayedAudioStream, { name: 'whatever'})
-    // ss(socket).emit('audio', relayedAudioStream, { name: 'whatever'})
     audioStream.pipe(relayedAudioStream);
-    // fs.createReadStream(filename).pipe(stream)
 
-
-    // THIS IS THE OLD WORKINGCODE
-    // stream.pipe(fs.createWriteStream('./yo.wav'));
+    // uncomment this line to ensure that audio stream is
+    // coming though as expected to server!
+    // audioStream.pipe(fs.createWriteStream('./yo.wav'));
   });
 
   socket.on('tick', (from, msg) => {
-    console.log('MSG from', from, ' saying ', msg);
+    // console.log('MSG from', from, ' saying ', msg);
     io.sockets.emit('tick', { msg: msg });
   });
 
