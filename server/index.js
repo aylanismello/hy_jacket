@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs')
 
 const PORT = process.env.NODE_ENV === 'production' ? 80 : 3000;
+const relayedAudioStream = ss.createStream();
 
 app.get('/', (req, res) => {
   res.send('yo');
@@ -13,11 +14,17 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
    console.log('connected to server');
-
   // for audio
-  ss(socket).on('audio', function(stream, data) {
-    console.log('got audio stream, writing to file');
-    stream.pipe(fs.createWriteStream('./yo.wav'));
+  ss(socket).on('audio', function(audioStream, data) {
+    console.log('got audio audioStream, piping stream to clients');
+    ss(io.sockets).emit('audio', relayedAudioStream, { name: 'whatever'})
+    // ss(socket).emit('audio', relayedAudioStream, { name: 'whatever'})
+    audioStream.pipe(relayedAudioStream);
+    // fs.createReadStream(filename).pipe(stream)
+
+
+    // THIS IS THE OLD WORKINGCODE
+    // stream.pipe(fs.createWriteStream('./yo.wav'));
   });
 
   socket.on('tick', (from, msg) => {
