@@ -11,30 +11,17 @@ app.get('/', (req, res) => {
   res.send('yo');
 })
 
-// const io = require('socket.io').listen(80);
-
-// io.on('connection', function(socket) {
-//   ss(socket).on('audio', function(stream, data) {
-//     const filename = path.basename(data.name);
-//     stream.pipe(fs.createWriteStream(filename));
-//   });
-// });
-
 io.on('connection', (socket) => {
    console.log('connected to server');
 
   // for audio
   ss(socket).on('audio', function(stream, data) {
-    console.log('got audio');
-    // console.dir(fs);
+    console.log('got audio stream, writing to file');
     stream.pipe(fs.createWriteStream('./yo.wav'));
-    // const filename = path.basename(data.name);
-    // stream.pipe(fs.createWriteStream(filename));
   });
 
   socket.on('tick', (from, msg) => {
     console.log('MSG from', from, ' saying ', msg);
-    // socket.emit('tick', { msg: msg });
     io.sockets.emit('tick', { msg: msg });
   });
 
